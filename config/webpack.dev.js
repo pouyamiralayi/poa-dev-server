@@ -20,6 +20,7 @@ module.exports = {
             // color:true
         // }
     },
+    devtool: "source-map", // map to exact line number when debugging.
     module:{
         rules:[
             {
@@ -43,7 +44,7 @@ module.exports = {
                 ]
             },
             {
-                test:/\.html$/,
+                test:/\.html$/, // we keep this loader, because we are requiring index.html to be part of HMR.
                 use:[
                     // we omit file-loader and extract-loader because the HTMLWebpackPlugin is doing the job for us.
                     // {
