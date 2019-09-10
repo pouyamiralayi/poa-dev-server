@@ -1,4 +1,6 @@
 const path = require('path')
+const webpack = require('webpack')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
     entry:{
         main:'./src/main.js'
@@ -13,6 +15,10 @@ module.exports = {
     devServer:{
         contentBase: 'dist', // when we run webpack dev server, everything will be served from dist.
         overlay:true, // syntax errors will be visible on the browser screen
+        hot:true,
+        // stats:{
+            // color:true
+        // }
     },
     module:{
         rules:[
@@ -39,15 +45,16 @@ module.exports = {
             {
                 test:/\.html$/,
                 use:[
-                    {
-                        loader:"file-loader",
-                        options: {
-                            name: '[name].html' // the file created comes with this name
-                        }
-                    },
-                    {
-                        loader:'extract-loader' // do not bundle this and treat this as a separate file
-                    },
+                    // we omit file-loader and extract-loader because the HTMLWebpackPlugin is doing the job for us.
+                    // {
+                    //     loader:"file-loader",
+                    //     options: {
+                    //         name: '[name].html' // the file created comes with this name
+                    //     }
+                    // },
+                    // {
+                    //     loader:'extract-loader' // do not bundle this and treat this as a separate file
+                    // },
                     {
                         loader:'html-loader'
                     }
@@ -65,5 +72,12 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new HTMLWebpackPlugin({ // this plugin automatically inject script tag inside our html. if you want to disable this: (inject:false)
+            template: "./src/index.html",
+            // inject: false
+        })
+    ]
 }
