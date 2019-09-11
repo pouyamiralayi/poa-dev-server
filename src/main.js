@@ -1,4 +1,3 @@
-require('babel-register') // transform app.js
 /*what ever files we require from now on, will be part of HMR*/
 require('./main.css') // need css loader
 require('./index.html') // need html loader

@@ -4,8 +4,10 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 module.exports = {
     entry:{
         main:[
+            'react-hot-loader/patch',
             'babel-runtime/regenerator',
             'webpack-hot-middleware/client?reload=true', // setup web socket connection
+            'babel-register', // transform app.js
             './src/main.js']
     },
     mode:'development',
