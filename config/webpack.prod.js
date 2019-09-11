@@ -3,6 +3,10 @@ const webpack = require('webpack')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const MinifyPlugin = require('babel-minify-webpack-plugin')
+const UglifyPlugin = require('uglifyjs-webpack-plugin')
+const CompressionPlugin = require('compression-webpack-plugin')
+const BrotliPlugin = require('brotli-webpack-plugin')
 const isProd = process.env.NODE_ENV === "production"
 
 module.exports = {
@@ -72,8 +76,9 @@ module.exports = {
     },
     plugins: [
         new OptimizeCssAssetsPlugin(),
-        new MiniCSSExtractPlugin(),
-        new webpack.NamedModulesPlugin(),
+        new MiniCSSExtractPlugin({
+            filename: '[name]-[contenthash].css'
+        }),
         new HTMLWebpackPlugin({ // this plugin automatically inject script tag inside our html. if you want to disable this: (inject:false)
             template: "./src/index.html",
             // inject: false
@@ -82,6 +87,13 @@ module.exports = {
             'process.env':{
                 'NODE_ENV':JSON.stringify('production')
             }
-        })
+        }),
+        new webpack.NamedModulesPlugin(),
+        new UglifyPlugin,
+        // new MinifyPlugin(),
+        new CompressionPlugin({
+            algorithm: 'gzip'
+        }),
+        new BrotliPlugin()
     ]
 }

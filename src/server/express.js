@@ -25,8 +25,11 @@ if (!isProd) {
     console.log("Middleware enabled")
 }
 
-const staticMiddleware = express.static('dist')
-server.use(staticMiddleware)
+// const staticMiddleware = express.static('dist')
+const staticGzipMiddleware = require('express-static-gzip')
+server.use(staticGzipMiddleware('dist', {
+    enableBrotli: true,
+}))
 
 const PORT = process.env.PORT || 8080
 server.listen(PORT, () => {
