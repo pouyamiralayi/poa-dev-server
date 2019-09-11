@@ -1,29 +1,22 @@
 const path = require('path')
 const webpack = require('webpack')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const isProd = process.env.NODE_ENV === "production"
+
 module.exports = {
     entry:{
         main:[
-            'babel-runtime/regenerator',
-            'webpack-hot-middleware/client?reload=true', // setup web socket connection
             './src/main.js']
     },
-    mode:'development',
+    mode: "production",
     output:{
         filename:'[name]-bundle.js',
         path:path.resolve(__dirname,'../dist'),
         publicPath:'/' // when we want to specify assets and files, this is the path we point to.
 
     },
-    devServer:{
-        contentBase: 'dist', // when we run webpack dev server, everything will be served from dist.
-        overlay:true, // syntax errors will be visible on the browser screen
-        hot:true,
-        // stats:{
-            // color:true
-        // }
-    },
-    devtool: "source-map", // map to exact line number when debugging.
     module:{
         rules:[
             {
@@ -39,7 +32,7 @@ module.exports = {
                 test: /\.css$/,
                 use:[
                     {
-                        loader:"style-loader"
+                        loader: MiniCSSExtractPlugin.loader
                     },
                     {
                         loader:'css-loader'
@@ -78,10 +71,17 @@ module.exports = {
         ]
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
+        new OptimizeCssAssetsPlugin(),
+        new MiniCSSExtractPlugin(),
+        new webpack.NamedModulesPlugin(),
         new HTMLWebpackPlugin({ // this plugin automatically inject script tag inside our html. if you want to disable this: (inject:false)
             template: "./src/index.html",
             // inject: false
+        }),
+        new webpack.DefinePlugin({
+            'process.env':{
+                'NODE_ENV':JSON.stringify('production')
+            }
         })
     ]
 }
